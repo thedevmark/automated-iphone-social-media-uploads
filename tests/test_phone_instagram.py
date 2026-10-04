@@ -133,3 +133,8 @@ def test_the_edits_share_sheet_read_by_ocr_taps_the_one_instagram_target():
     with patch.object(ig.share, "layout", lambda **k: PhoneLayout(440, 956)):
         assert ig.ocr_share_target(rows) == {"text": "Instagram", "x": 60, "y": 820}
         assert ig.ocr_share_target([{"text": "Exporting", "x": 1, "y": 1}]) is None
+        # Real Post now 2026-10-03 23:05: the export's progress screen, 27.6% done.
+        progress = [{"text": "27.6%", "x": 185, "y": 146},
+                    {"text": "Please don't close the app or lock your screen. You can", "x": 42, "y": 180},
+                    {"text": "choose where to share your video next.", "x": 94, "y": 199}]
+        assert ig.ocr_share_target(progress) is None

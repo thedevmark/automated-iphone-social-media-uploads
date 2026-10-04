@@ -18,6 +18,9 @@ never does, and how to check the code you run is the code published here.
   computer: the local Ollama model server (`127.0.0.1:11434` by default) and
   the phone link on `127.0.0.1:8100`. `tests/test_security_claims.py` fails
   the build if code gains any other address.
+- The one outside address in the app is a plain link in Settings > Setup to
+  this repository on `github.com`. The app never requests it; your browser
+  opens it only when you click it.
 - The phone driver is part of this repository (`video_drop/phone/`, copied
   from [SideTap](https://github.com/ucsandman/SideTap), MIT; provenance and
   every change in `video_drop/phone/VENDORED.md`). Nothing is imported from a

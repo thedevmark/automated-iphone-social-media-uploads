@@ -34,8 +34,10 @@ class StaticFileTests(unittest.TestCase):
         page = (server.ROOT / "web" / "index.html").read_text(encoding="utf-8")
         self.assertIn("url(/fonts/inter-variable.woff2)", page)
         self.assertNotIn("fonts.googleapis.com", page)
-        # Local-first: no script, style or font comes from the network.
-        self.assertNotRegex(page, r"(src|href)=[\"']https?://")
+        # Local-first: no script, style or font comes from the network. A link the user clicks
+        # (Settings > Setup's GitHub link) loads nothing until clicked, so it is allowed.
+        self.assertNotRegex(page, r"src=[\"']https?://")
+        self.assertNotRegex(page, r"<link[^>]+href=[\"']https?://")
 
     def test_first_run_flow_and_theme_toggle_are_in_the_page(self):
         page = (server.ROOT / "web" / "index.html").read_text(encoding="utf-8")

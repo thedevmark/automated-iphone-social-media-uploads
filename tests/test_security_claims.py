@@ -7,6 +7,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 URL = re.compile(r"(?:https?:)?//([A-Za-z0-9.\-{}\[\]]+)")
 LOOPBACK = {"127.0.0.1", "localhost", "{host}"}
+# Documented in SECURITY.md: a clicked link to this repository, never requested by the app.
+CLICKED_LINKS = {("web/index.html", "github.com")}
 
 
 def shipped_files():
@@ -25,7 +27,7 @@ class SecurityClaimTests(unittest.TestCase):
                     continue
                 for host in URL.findall(line):
                     if "." in host or host in {"localhost", "{host}"}:
-                        if host not in LOOPBACK:
+                        if host not in LOOPBACK and (path.relative_to(ROOT).as_posix(), host) not in CLICKED_LINKS:
                             found.append(f"{path.relative_to(ROOT)}:{line_no}: {host}")
         self.assertEqual(found, [], "update SECURITY.md before adding a non-local address")
 

@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import os
 import subprocess
 import sys
@@ -257,6 +258,12 @@ def ocr_share_target(rows: list[dict] | None = None) -> dict | None:
     if rows is None:
         rows = ocr.screen_rows(share.screen_pixels(), share.layout().width)
     texts = [" ".join(str(row.get("text", "")).split()).casefold() for row in rows]
+    # The export's progress screen says "...You can / choose where to share your video next."
+    # beside its percentage; OCR wraps that second line so it also starts with the heading
+    # (real Post now 2026-10-03 23:05, at 27.6%). A percentage or that line means: exporting.
+    if any(re.fullmatch(r"\d{1,3}(\.\d)?%", text) or text.startswith("please don't close the app")
+           or text.startswith(SHARE_SHEET + " your video next") for text in texts):
+        return None
     if not any(text.startswith(SHARE_SHEET) for text in texts):
         return None
     targets = [row for row, text in zip(rows, texts)
